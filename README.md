@@ -50,15 +50,16 @@ Interchangeable Clients: Angular, React, Vue 3, and ASP.NET MVC all consuming th
 
 Strict Tooling: Configured with strict TypeScript compilers, ESLint rulesets, and native server-side rendering (SSR) via MVC to validate real-world production constraints.
 
-🗺️ Implementation Roadmap
-[x] Phase 1: Project Scaffolding & Tooling Verification Backend Solution + 4 Frontend clients configured & linted.
+## 🤖 Developer AI Orchestration
+This monorepo utilizes **Cursor** paired with **Gemini** to accelerate development safely and systematically:
+* **System-wide Rules:** Guided by `.cursorrules` to enforce C# 13 clean architecture practices and strict frontend structures.
+* **Specialized Prompts:** Reusable development templates located in `.github/prompts/` to run isolated routines such as `generate-unit-tests` and `optimize-sql-query`.
 
-[x] Phase 2: Domain Modeling & Database Persistence Entity Framework Core, SQL migrations applied, Scalar UI integrated, and SQL Dev-Seeding.
+## 🗺️ Implementation Roadmap
 
-[ ] Phase 3: AI Orchestration & Gemini Integration Integrating Gemini Flash API into the Infrastructure layer to analyze Audit Logs, configuring specialized system-prompts and workspace-level context templates for AI-assisted development.
-
-[ ] Phase 4: Core API & CORS Integration Controller pipelines, custom error handling middleware, and secure multi-origin routing.
-
-[ ] Phase 5: Multi-Frontend Development State management, reusable component structures, and API consumption across all four clients.
-
-[ ] Phase 6: High-Performance Database Tuning Execution of database query optimization, performance indexes, telemetry logging, and SQL Server execution plans.
+* [x] **Phase 1: Project Scaffolding & Tooling Verification** *Backend Solution + 4 Frontend clients configured & linted.*
+* [x] **Phase 2: Domain Modeling & Database Persistence** *Entity Framework Core, SQL migrations applied, Scalar UI integrated, and SQL Dev-Seeding.*
+* [x] **Phase 3: AI Orchestration & Developer Environment Tuning** *Configured root-level `.cursorrules` to standardize coding patterns across backend and all four frontends. Integrated reusable markdown prompt templates under `.github/prompts/` for Unit Testing and SQL Optimization using Gemini.*
+* [ ] **Phase 4: Core API & CORS Integration** *Controller pipelines, custom error handling middleware, and secure multi-origin routing.*
+* [ ] **Phase 5: Multi-Frontend Development** *State management, reusable component structures, and API consumption across all four clients.*
+* [ ] **Phase 6: High-Performance Database Tuning** *Execution of database query optimization, performance indexes, telemetry logging, and SQL Server execution plans.*

@@ -1,0 +1,53 @@
+# Cursor Rules — Enterprise Audit & Delivery System (Development Assistant)
+
+You are an expert AI software engineer. Your role is to assist the developer in writing, refactoring, and optimizing production-grade code for this monorepo.
+
+---
+
+## 🏗️ Backend Constraints & Rules (C# 13 & .NET 9)
+
+### Layer 1: Domain
+- **Location:** `backend/AuditSystem.Domain/`
+- **Rule:** ZERO external dependencies. Do not import EF Core, MediatR, or third-party libraries.
+- **Entities:** Rich domain models only. Properties must use `private set` or `init` to enforce immutability.
+- **Validation:** Enforce business invariants within entities using custom domain exceptions.
+
+### Layer 2: Infrastructure
+- **Location:** `backend/AuditSystem.Infrastructure/`
+- **Rule:** Contains database access, EF Core DbContext, and file storage integrations.
+- **SQL Server Optimization:** Prioritize highly optimized EF Core LINQ queries. When raw SQL is required, suggest pure SQL Server scripts wrapped in safe transactions. Avoid N+1 query problems.
+
+### Layer 3: Web API
+- **Location:** `backend/AuditSystem.API/`
+- **Rule:** Do not expose Domain Entities. Always map Domain Entities to strict DTOs using C# `record` types.
+- **Exception Handling:** No `try-catch` blocks inside controllers. Use global Exception Handling Middleware to format and return standard error responses.
+
+---
+
+## 🎨 Frontend Constraints & Rules
+
+### 1. Angular Client
+- **Location:** `frontends/angular-audit-app/`
+- **Standards:** Angular 17+, Standalone Components (no NgModules), and the new Control Flow (`@if`, `@for`, `@switch`).
+- **State & Data:** Handle asynchronous reactive flows using RxJS, strictly typing all Observables. Avoid `.subscribe()` memory leaks by using the `async` pipe in templates.
+
+### 2. React Client
+- **Location:** `frontends/react-audit-app/`
+- **Standards:** React 18+ built with Vite and TypeScript. Functional components only.
+- **Strict Linting:** Adhere strictly to the configured ESLint ruleset. Hooks must follow strict dependency arrays.
+
+### 3. Vue Client
+- **Location:** `frontends/vue-audit-app/`
+- **Standards:** Vue 3 built with Vite and TypeScript.
+- **Composition API:** Always use `<script setup lang="ts">`. Utilize `ref` and `computed` for reactive state.
+
+### 4. MVC Razor Client (SSR)
+- **Location:** `frontends/mvc-audit-app/`
+- **Standards:** ASP.NET Core MVC (C# & Razor Views) for server-side rendering.
+
+---
+
+## 📝 Output Guidelines
+- Be direct, professional, and authoritative. No generic boilerplate explanations.
+- Provide compile-ready code snippets with correct file paths.
+- Respect Nullable Reference Types (`#nullable enable`) in C# and strict TypeScript compiler options.
