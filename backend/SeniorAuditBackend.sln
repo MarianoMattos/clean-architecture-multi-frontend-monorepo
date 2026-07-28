@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuditSystem.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mvc-audit-app", "..\frontends\mvc-audit-app\mvc-audit-app.csproj", "{F69D639E-27EE-40DB-A0EA-3208EA023BDF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuditSystem.Application", "AuditSystem.Application\AuditSystem.Application.csproj", "{9A3B60D9-4C7A-4048-8F12-F143AC44C014}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{F69D639E-27EE-40DB-A0EA-3208EA023BDF}.Release|x64.Build.0 = Release|Any CPU
 		{F69D639E-27EE-40DB-A0EA-3208EA023BDF}.Release|x86.ActiveCfg = Release|Any CPU
 		{F69D639E-27EE-40DB-A0EA-3208EA023BDF}.Release|x86.Build.0 = Release|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Debug|x64.Build.0 = Debug|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Debug|x86.Build.0 = Debug|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Release|x64.ActiveCfg = Release|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Release|x64.Build.0 = Release|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Release|x86.ActiveCfg = Release|Any CPU
+		{9A3B60D9-4C7A-4048-8F12-F143AC44C014}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

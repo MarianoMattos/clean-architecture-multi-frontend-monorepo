@@ -1,12 +1,15 @@
+#nullable enable
+using System;
+
 namespace AuditSystem.Domain.Entities;
 
 public class DeliveryJob : Entity
 {
-    public string JobCode { get; private set; } = null!;
-public string ClientName { get; private set; } = null!;
-public string Status { get; private set; } = null!;
-public int RetryCount { get; private set; }
-public DateTime? CompletedAt { get; private set; }
+    public string JobCode { get; init; } = string.Empty;
+    public string ClientName { get; init; } = string.Empty;
+    public string Status { get; private set; } = "Pending";
+    public int RetryCount { get; private set; }
+    public DateTime? CompletedAt { get; private set; }
 
     private DeliveryJob() { }
 
@@ -16,12 +19,12 @@ public DateTime? CompletedAt { get; private set; }
             throw new ArgumentException("El código de lote de entrega es obligatorio.", nameof(jobCode));
 
         return new DeliveryJob
-        {
+         {
             JobCode = jobCode.ToUpperInvariant(),
-            ClientName = clientName,
+            ClientName = clientName ?? throw new ArgumentNullException(nameof(clientName)),
             Status = "Pending",
             RetryCount = 0
-        };
+         };
     }
 
     public void FailJob()

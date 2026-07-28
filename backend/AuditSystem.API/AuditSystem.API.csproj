@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AuditSystem.Infrastructure\AuditSystem.Infrastructure.csproj" />
     <ProjectReference Include="..\AuditSystem.Domain\AuditSystem.Domain.csproj" />
+    <ProjectReference Include="..\AuditSystem.Application\AuditSystem.Application.csproj" />
   </ItemGroup>
 
 </Project>
