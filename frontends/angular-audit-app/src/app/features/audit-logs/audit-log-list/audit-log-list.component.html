@@ -1,55 +1,62 @@
 <div class="container my-4 position-relative">
 
+  <!-- Toast Notification -->
   @if (toastMessage) {
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
-      <div class="toast show align-items-center text-white bg-success border-0 shadow">
-        <div class="d-flex">
-          <div class="toast-body fs-6">
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      <div class="toast show align-items-center bg-success border-0 p-2">
+        <div class="d-flex align-items-center">
+          <div class="toast-body fs-6 fw-semibold">
             ✓ {{ toastMessage }}
           </div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="toastMessage = null"></button>
+          <button type="button" class="btn-close me-2 m-auto" (click)="toastMessage = null"></button>
         </div>
       </div>
     </div>
   }
 
-  <div class="d-flex justify-content-between align-items-center">
-    <h2>Audit Logs Dashboard</h2>
-    <button class="btn btn-primary fw-bold" (click)="openCreateModal()">
+  <!-- Header Dashboard -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">Audit Logs Dashboard</h2>
+      <p class="text-muted small mb-0">Gestión y auditoría de eventos del sistema</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateModal()">
       + Registrar Evento
     </button>
   </div>
 
+  <!-- Cards / KPI -->
   <div class="row my-3 g-3">
     <div class="col-md-4">
-      <div class="card bg-primary text-white shadow-sm">
+      <div class="card p-2">
         <div class="card-body">
-          <h6 class="card-title text-uppercase fs-7">Total Registros</h6>
-          <p class="card-text fs-3 fw-bold mb-0">{{ auditService.totalLogsCount() }}</p>
+          <h6 class="card-title text-uppercase">Total Registros</h6>
+          <p class="card-text fs-3 mb-0">{{ auditService.totalLogsCount() }}</p>
         </div>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="card bg-success text-white shadow-sm">
+      <div class="card p-2">
         <div class="card-body">
-          <h6 class="card-title text-uppercase fs-7">Registros con Payload</h6>
-          <p class="card-text fs-3 fw-bold mb-0">{{ auditService.payloadCount() }}</p>
+          <h6 class="card-title text-uppercase">Registros con Payload</h6>
+          <p class="card-text fs-3 mb-0">{{ auditService.payloadCount() }}</p>
         </div>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="card bg-dark text-white shadow-sm">
+      <div class="card p-2">
         <div class="card-body">
-          <h6 class="card-title text-uppercase fs-7">Filtrados en Pantalla</h6>
-          <p class="card-text fs-3 fw-bold mb-0">{{ auditService.totalFilteredCount() }}</p>
+          <h6 class="card-title text-uppercase">Filtrados en Pantalla</h6>
+          <p class="card-text fs-3 mb-0">{{ auditService.totalFilteredCount() }}</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row mb-3 g-3 align-items-center">
+  <!-- Filter -->
+  <div class="row mb-4 g-3 align-items-center card p-3 mx-0">
     <div class="col-auto">
-      <label for="sourceSelect" class="col-form-label fw-bold">System Source:</label>
+      <label for="sourceSelect" class="col-form-label fw-semibold text-muted fs-7">System Source:</label>
     </div>
     <div class="col-auto">
       <select 
@@ -73,148 +80,189 @@
     </div>
   </div>
 
+  <!-- Spinner / Errors -->
   @if (auditService.loading()) {
-    <div class="alert alert-info">Cargando datos...</div>
+    <div class="alert alert-info border-0 rounded-3">Cargando datos...</div>
   }
 
   @if (auditService.error()) {
-    <div class="alert alert-danger alert-dismissible fade show">
+    <div class="alert alert-danger border-0 rounded-3">
       {{ auditService.error() }}
     </div>
   }
 
+  <!-- Main Table -->
   @if (!auditService.loading() && !auditService.error()) {
-    <table class="table table-striped table-hover border align-middle">
-      <thead class="table-dark">
-        <tr>
-          <th (click)="onSort('id')" style="cursor: pointer;" class="user-select-none">ID</th>
-          <th>System Source</th>
-          <th (click)="onSort('action')" style="cursor: pointer;" class="user-select-none">Action</th>
-          <th>Severity</th> <!-- 👈 Columna agregada -->
-          <th class="text-center">Detalle</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (log of auditService.paginatedLogs(); track log.id) {
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
           <tr>
-            <td><code>{{ log.id }}</code></td>
-            <td><span class="badge bg-secondary">{{ log.systemSource }}</span></td>
-            <td>{{ log.action }}</td>
-            <td>
-              <span class="badge" [ngClass]="{
-                'bg-info': log.severity === 'Information',
-                'bg-warning text-dark': log.severity === 'Warning',
-                'bg-danger': log.severity === 'Error' || log.severity === 'Critical'
-              }">
-                {{ log.severity }}
-              </span>
-            </td>
-            <td class="text-center">
-              <button class="btn btn-sm btn-outline-primary" (click)="openPayloadModal(log)">
-                Ver Payload
-              </button>
-            </td>
+            <th (click)="onSort('id')" style="cursor: pointer;" class="user-select-none">ID</th>
+            <th>System Source</th>
+            <th (click)="onSort('action')" style="cursor: pointer;" class="user-select-none">Action</th>
+            <th>Severity</th>
+            <th class="text-center">Detalle</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (log of auditService.paginatedLogs(); track log.id) {
+            <tr>
+              <td><code class="text-dark fw-semibold">{{ log.id }}</code></td>
+              <td><span class="badge bg-secondary">{{ log.systemSource }}</span></td>
+              <td class="fw-medium">{{ log.action }}</td>
+              <td>
+                @switch (log.severity) {
+                  @case (1) {
+                    <span class="badge bg-info-subtle text-info border border-info border-opacity-25 px-2 py-1">
+                      Info (1)
+                    </span>
+                  }
+                  @case (2) {
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning border-opacity-25 px-2 py-1">
+                      Warning (2)
+                    </span>
+                  }
+                  @case (3) {
+                    <span class="badge bg-danger-subtle text-danger border border-danger border-opacity-25 px-2 py-1">
+                      Critical (3)
+                    </span>
+                  }
+                  @default {
+                    <span class="badge bg-secondary-subtle text-secondary px-2 py-1">
+                      Level {{ log.severity }}
+                    </span>
+                  }
+                }
+              </td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-primary" (click)="openPayloadModal(log)">
+                  Ver Payload
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
 
-    <div class="d-flex justify-content-between align-items-center">
+    <!-- Pages -->
+    <div class="d-flex justify-content-between align-items-center pagination-container mt-3">
+
       <div class="d-flex align-items-center gap-2">
-        <label class="form-label mb-0 fs-7">Registros por página:</label>
-        <select class="form-select form-select-sm w-auto" (change)="onPageSizeChange($event)">
-          <option value="5" selected>5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
+        <button 
+          type="button" 
+          class="btn btn-pagination-nav" 
+          [disabled]="auditService.currentPage() === 1" 
+          (click)="auditService.setPage(auditService.currentPage() - 1)">
+          ‹
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-pagination-nav" 
+          [disabled]="auditService.currentPage() === auditService.totalPages()" 
+          (click)="auditService.setPage(auditService.currentPage() + 1)">
+          ›
+        </button>
+
+        <span class="pagination-range-text ms-2">
+          Página {{ auditService.currentPage() }} de {{ auditService.totalPages() }}
+        </span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="pagination-label-text">Show on page</span>
+        <select class="form-select pagination-select" (change)="onPageSizeChange($event)">
+          <option value="5" selected>5 rows</option>
+          <option value="10">10 rows</option>
+          <option value="20">20 rows</option>
         </select>
       </div>
-
-      <nav>
-        <ul class="pagination pagination-sm mb-0">
-          <li class="page-item" [class.disabled]="auditService.currentPage() === 1">
-            <button class="page-link" (click)="auditService.setPage(auditService.currentPage() - 1)">Anterior</button>
-          </li>
-          <li class="page-item disabled">
-            <span class="page-link">Página {{ auditService.currentPage() }} de {{ auditService.totalPages() }}</span>
-          </li>
-          <li class="page-item" [class.disabled]="auditService.currentPage() === auditService.totalPages()">
-            <button class="page-link" (click)="auditService.setPage(auditService.currentPage() + 1)">Siguiente</button>
-          </li>
-        </ul>
-      </nav>
     </div>
   }
 </div>
 
+<!-- Modal Payload Details -->
 @if (auditService.selectedLog(); as selectedLog) {
-  <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal fade show d-block" style="background-color: rgba(15, 23, 42, 0.4);">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Detalle del Registro: <code>{{ selectedLog.id }}</code></h5>
+          <h5 class="modal-title fw-bold">Detalle del Registro</h5>
           <button type="button" class="btn-close" (click)="closeModal()"></button>
         </div>
         <div class="modal-body">
-          <p><strong>Acción:</strong> {{ selectedLog.action }}</p>
-          <p><strong>Origen:</strong> <span class="badge bg-info text-dark">{{ selectedLog.systemSource }}</span></p>
-          <h6>Payload:</h6>
-          <pre class="bg-dark text-light p-3 rounded" style="max-height: 300px; overflow-y: auto;"><code>{{ formatJson(selectedLog.payload) }}</code></pre>
+          <p class="mb-1"><strong>ID:</strong> <code>{{ selectedLog.id }}</code></p>
+          <p class="mb-1"><strong>Acción:</strong> {{ selectedLog.action }}</p>
+          <p class="mb-3"><strong>Origen:</strong> <span class="badge bg-secondary">{{ selectedLog.systemSource }}</span></p>
+          <h6 class="fw-bold mb-2">Payload:</h6>
+          <pre class="bg-dark text-light p-3 rounded-3" style="max-height: 300px; overflow-y: auto;"><code>{{ formatJson(selectedLog.payload) }}</code></pre>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+          <button type="button" class="btn btn-outline-primary" (click)="closeModal()">Cerrar</button>
         </div>
       </div>
     </div>
   </div>
 }
 
+<!-- Modal New -->
 @if (isCreateModalOpen) {
-  <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal fade show d-block" style="background-color: rgba(15, 23, 42, 0.4);">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Nuevo Registro de Auditoría</h5>
+          <h5 class="modal-title fw-bold">Nuevo Registro de Auditoría</h5>
           <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
         </div>
         <form (ngSubmit)="submitNewLog()">
           <div class="modal-body">
             <div class="mb-3">
-              <label class="form-label fw-bold">System Source</label>
+              <label class="form-label fw-semibold">System Source</label>
               <select class="form-select" [(ngModel)]="newLogForm.systemSource" name="systemSource" required>
                 @for (source of sources; track source) {
                   <option [value]="source">{{ source }}</option>
                 }
               </select>
             </div>
+
             <div class="mb-3">
-              <label class="form-label fw-bold">Acción / Evento</label>
+              <label class="form-label fw-semibold">Acción</label>
               <input 
                 type="text" 
                 class="form-control" 
-                placeholder="Ej: PROCESS_PAYMENT_FAILED" 
                 [(ngModel)]="newLogForm.action" 
                 name="action" 
                 required />
             </div>
+
             <div class="mb-3">
-              <label class="form-label fw-bold">Payload (JSON)</label>
-              <textarea 
-                class="form-control font-monospace" 
-                rows="5" 
-                [(ngModel)]="newLogForm.payload" 
-                name="payload"></textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-bold">Severity</label>
+              <label class="form-label fw-semibold">Severity</label>
               <select class="form-select" [(ngModel)]="newLogForm.severity" name="severity" required>
-                @for (sev of severities; track sev) {
-                  <option [value]="sev">{{ sev }}</option>
+                @for (sev of severities; track sev.value) {
+                  <option [ngValue]="sev.value">{{ sev.label }}</option>
                 }
               </select>
             </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Ejecutado Por</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                [(ngModel)]="newLogForm.performedBy" 
+                name="performedBy" />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Payload (JSON)</label>
+              <textarea 
+                class="form-control font-monospace" 
+                rows="4" 
+                [(ngModel)]="newLogForm.payload" 
+                name="payload"></textarea>
+            </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">Cancelar</button>
+            <button type="button" class="btn btn-outline-primary" (click)="closeCreateModal()">Cancelar</button>
             <button type="submit" class="btn btn-primary" [disabled]="!newLogForm.action.trim()">Guardar Evento</button>
           </div>
         </form>

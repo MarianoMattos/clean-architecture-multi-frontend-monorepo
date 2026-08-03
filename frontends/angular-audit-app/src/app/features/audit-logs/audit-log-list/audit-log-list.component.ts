@@ -13,18 +13,16 @@ import { AuditLog, AuditSeverity } from '../../../shared/models/audit-log.model'
 })
 export class AuditLogListComponent implements OnInit {
   protected auditService = inject(AuditLogService);
-  
+
   sources: string[] = ['B2B_Gateway', 'DeliveryService', 'CoreAPI'];
   selectedSourceFilter: string = 'B2B_Gateway';
   searchTerm: string = '';
 
-  AuditSeverity = AuditSeverity;
-
   severities = [
-    { label: 'Information', value: AuditSeverity.Information }, 
-    { label: 'Warning', value: AuditSeverity.Warning },         
-    { label: 'Error', value: AuditSeverity.Error },             
-    { label: 'Critical', value: AuditSeverity.Critical }        
+    { label: 'Information', value: AuditSeverity.Information },
+    { label: 'Warning', value: AuditSeverity.Warning },
+    { label: 'Error', value: AuditSeverity.Error },
+    { label: 'Critical', value: AuditSeverity.Critical }
   ];
 
   isCreateModalOpen: boolean = false;
@@ -33,9 +31,9 @@ export class AuditLogListComponent implements OnInit {
   newLogForm = {
     systemSource: 'B2B_Gateway',
     action: '',
-    severity: AuditSeverity.Information, 
-    payload: '',
-    performedBy: 'SystemUser'
+    severity: AuditSeverity.Information,
+    performedBy: '',
+    payload: ''
   };
 
   ngOnInit(): void {
@@ -46,13 +44,35 @@ export class AuditLogListComponent implements OnInit {
     this.auditService.loadLogsBySource(this.selectedSourceFilter);
   }
 
+  onSearchChange(): void {
+    this.auditService.setSearchTerm(this.searchTerm);
+  }
+
+  onSort(column: keyof AuditLog): void {
+    this.auditService.toggleSort(column);
+  }
+
+  onPageSizeChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const size = Number(selectElement.value);
+    this.auditService.setPageSize(size);
+  }
+
+  openPayloadModal(log: AuditLog): void {
+    this.auditService.selectLog(log);
+  }
+
+  closeModal(): void {
+    this.auditService.selectLog(null);
+  }
+
   openCreateModal(): void {
     this.newLogForm = {
       systemSource: this.selectedSourceFilter,
       action: '',
       severity: AuditSeverity.Information,
-      payload: '{\n  "status": "Success"\n}',
-      performedBy: 'AdminUser'
+      performedBy: 'AdminUser',
+      payload: '{\n  "status": "Success"\n}'
     };
     this.isCreateModalOpen = true;
   }
@@ -72,27 +92,27 @@ export class AuditLogListComponent implements OnInit {
     this.auditService.createAuditLog(payloadToSend).subscribe({
       next: () => {
         this.closeCreateModal();
-        this.showToast('¡Registro guardado correctamente!');
+        this.showToast('Record created successfully!');
       },
       error: (err) => {
-        console.error('Error al guardar el registro:', err);
+        this.showToast(err.message);
       }
     });
   }
 
   showToast(message: string): void {
     this.toastMessage = message;
-    setTimeout(() => { this.toastMessage = null; }, 4000);
+    setTimeout(() => {
+      this.toastMessage = null;
+    }, 4000);
   }
 
-  getSeverityLabel(severity: number | string): string {
-    const numericValue = Number(severity);
-    switch (numericValue) {
-      case AuditSeverity.Information: return 'Information';
-      case AuditSeverity.Warning: return 'Warning';
-      case AuditSeverity.Error: return 'Error';
-      case AuditSeverity.Critical: return 'Critical';
-      default: return String(severity);
+  formatJson(payload?: string): string {
+    if (!payload) return 'Sin payload asociado.';
+    try {
+      return JSON.stringify(JSON.parse(payload), null, 2);
+    } catch {
+      return payload;
     }
   }
 }

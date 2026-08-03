@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { AuditLog } from '../../shared/models/audit-log.model';
+import { AuditLog, CreateAuditLogDto } from '../../shared/models/audit-log.model';
+import { AuditApiService } from './audit-api.service';
 import { catchError, of, tap } from 'rxjs';
 
 export type SortDirection = 'asc' | 'desc';
@@ -9,8 +9,7 @@ export type SortDirection = 'asc' | 'desc';
   providedIn: 'root'
 })
 export class AuditLogService {
-  private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5185/api/AuditLogs';
+  private api = inject(AuditApiService);
 
   private state = signal<{
     logs: AuditLog[];
@@ -65,7 +64,7 @@ export class AuditLogService {
     result.sort((a, b) => {
       const valA = a[col] ?? '';
       const valB = b[col] ?? '';
-      return valA.localeCompare(valB) * dir;
+      return String(valA).localeCompare(String(valB)) * dir;
     });
 
     return result;
@@ -92,21 +91,21 @@ export class AuditLogService {
       currentPage: 1 
     }));
 
-    this.http.get<AuditLog[]>(`${this.apiUrl}/source/${source}`)
+    this.api.getLogsBySource(source)
       .pipe(
         tap((logs) => this.state.update(s => ({ ...s, logs, loading: false }))),
-        catchError(() => {
-          this.state.update(s => ({ ...s, loading: false, error: 'Error al cargar los logs.' }));
+        catchError((err: Error) => {
+          this.state.update(s => ({ ...s, loading: false, error: err.message }));
           return of([]);
         })
       )
       .subscribe();
   }
 
-  createAuditLog(newLog: { systemSource: string; action: string; severity: string; payload?: string }) {
+  createAuditLog(newLog: CreateAuditLogDto) {
     this.state.update(s => ({ ...s, loading: true, error: null }));
 
-    return this.http.post<AuditLog>(this.apiUrl, newLog).pipe(
+    return this.api.createAuditLog(newLog).pipe(
       tap((createdLog) => {
         this.state.update(s => {
           const isCurrentSource = s.selectedSource === createdLog.systemSource;
@@ -120,12 +119,8 @@ export class AuditLogService {
           };
         });
       }),
-      catchError((err) => {
-        this.state.update(s => ({ 
-          ...s, 
-          loading: false, 
-          error: 'No se pudo guardar el registro de auditoría en la BD.' 
-        }));
+      catchError((err: Error) => {
+        this.state.update(s => ({ ...s, loading: false, error: err.message }));
         throw err;
       })
     );
